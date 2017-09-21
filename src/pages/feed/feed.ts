@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { MoovieProvider } from './../../providers/moovie/moovie';
 
 /**
  * Generated class for the FeedPage page.
@@ -12,18 +13,44 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 @Component({
   selector: 'page-feed',
   templateUrl: 'feed.html',
+  providers: [
+    MoovieProvider
+  ]
 })
 export class FeedPage {
 
-  public nome_usuario:string = "Fabio Tahan";
+  public obj_feed = {
 
-  
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+    gntd_likes: 12,
+    qntd_comments: 6,
+    time_comment: "11h ago"
+
   }
-  
+
+  public lista_filmes = new Array<any>();
+
+
+
+  public nome_usuario: string = "Fabio Tahan";
+
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    private MoovieProvider: MoovieProvider
+  ) {
+  }
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad FeedPage');
-   
+    this.MoovieProvider.getLatestMovies().subscribe(
+
+      data => {
+        const response = (data as any);
+        const obj_retorno = JSON.parse(response._body)
+        this.lista_filmes = obj_retorno.results;
+        //  console.log(obj_retorno);
+      }, error => {
+        //console.log(error);
+      })
   }
 
 }
